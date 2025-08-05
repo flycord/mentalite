@@ -1,2 +1,0 @@
-# mentalite
-Mentalite Page
