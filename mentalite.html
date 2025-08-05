@@ -36,7 +36,6 @@
             color: var(--text);
             min-height: 100vh;
             overflow-x: hidden;
-            cursor: url('https://cdn.discordapp.com/attachments/788686743427612673/123456789/cursor.png'), auto;
         }
 
         .cursor {
@@ -112,17 +111,8 @@
             background: linear-gradient(135deg, rgba(var(--rgb), 0.8), rgba(64, 78, 237, 0.6));
             position: relative;
             overflow: hidden;
-        }
-
-        .profile-banner::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('https://cdn.discordapp.com/attachments/788686743427612673/123456789/banner.png') center/cover;
-            opacity: 0.3;
+            background-size: cover;
+            background-position: center;
         }
 
         .profile-avatar {
@@ -165,6 +155,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            z-index: 3;
         }
 
         .profile-content {
@@ -448,13 +439,13 @@
     
     <div class="container">
         <div class="profile-card">
-            <div class="profile-banner shimmer"></div>
+            <div class="profile-banner" id="profile-banner"></div>
             <div class="profile-avatar">
                 <img id="avatar" src="" alt="Profile Avatar">
             </div>
-            <div class="profile-badge">
+            <div class="profile-badge" id="profile-badge" style="display: none;">
                 <i class="fas fa-check-circle"></i>
-                <span>VERIFIED</span>
+                <span id="badge-text">VERIFIED</span>
             </div>
             
             <div class="profile-content">
@@ -486,7 +477,7 @@
                     </div>
                     <div class="detail-card">
                         <h3>Badges</h3>
-                        <p id="badges">Verified Developer</p>
+                        <p id="badges">Loading...</p>
                     </div>
                 </div>
                 
@@ -644,10 +635,31 @@
                     updateProfile(data.data);
                 } else {
                     console.error('Failed to fetch data from Lanyard API');
+                    showErrorState();
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
+                showErrorState();
             }
+        }
+
+        function showErrorState() {
+            document.getElementById('username').textContent = 'Error Loading Data';
+            document.getElementById('discriminator').textContent = '';
+            document.getElementById('status').querySelector('span').textContent = 'API Error';
+            
+            const activitiesContainer = document.getElementById('activities');
+            activitiesContainer.innerHTML = `
+                <div class="activity-card">
+                    <div class="activity-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="activity-details">
+                        <h3>API Error</h3>
+                        <p>Failed to fetch data from Lanyard API</p>
+                    </div>
+                </div>
+            `;
         }
 
         function updateProfile(data) {
@@ -656,12 +668,34 @@
             document.getElementById('discriminator').textContent = user.discriminator === '0' ? '' : `#${user.discriminator}`;
             document.getElementById('global-name').textContent = user.global_name || user.username;
             document.getElementById('discord-id').textContent = user.id;
-            
+           
             const avatarUrl = user.avatar 
                 ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar.startsWith('a_') ? 'gif' : 'png'}?size=256`
                 : `https://cdn.discordapp.com/embed/avatars/${parseInt(user.discriminator) % 5}.png`;
             document.getElementById('avatar').src = avatarUrl;
-           
+            
+            const bannerElement = document.getElementById('profile-banner');
+            if (user.banner) {
+                const bannerUrl = user.banner.startsWith('a_') 
+                    ? `https://cdn.discordapp.com/banners/${user.id}/${user.banner}.gif?size=600`
+                    : `https://cdn.discordapp.com/banners/${user.id}/${user.banner}.png?size=600`;
+                bannerElement.style.backgroundImage = `url(${bannerUrl})`;
+            } else {
+                bannerElement.style.background = `linear-gradient(135deg, rgba(${getComputedStyle(document.documentElement).getPropertyValue('--rgb')}, 0.8), rgba(64, 78, 237, 0.6))`;
+            }
+            
+            const badgeElement = document.getElementById('profile-badge');
+            if (user.public_flags) {
+                const badges = [];
+                if (user.public_flags & (1 << 17)) badges.push('Verified Bot');
+                if (user.public_flags & (1 << 18)) badges.push('Verified Developer');
+                
+                if (badges.length > 0) {
+                    badgeElement.style.display = 'flex';
+                    document.getElementById('badge-text').textContent = badges[0];
+                }
+            }
+      
             const status = data.discord_status;
             const statusElement = document.getElementById('status');
             const statusDot = statusElement.querySelector('.status-dot');
@@ -697,8 +731,20 @@
             
             const badges = [];
             if (user.public_flags) {
-                if (user.public_flags & (1 << 17)) badges.push('Verified Bot');
-                if (user.public_flags & (1 << 18)) badges.push('Verified Developer');
+                if (user.public_flags & (1 << 0)) badges.push('Staff');
+                if (user.public_flags & (1 << 1)) badges.push('Partner');
+                if (user.public_flags & (1 << 2)) badges.push('Hypesquad');
+                if (user.public_flags & (1 << 3)) badges.push('Bug Hunter Level 1');
+                if (user.public_flags & (1 << 6)) badges.push('Hypesquad Bravery');
+                if (user.public_flags & (1 << 7)) badges.push('Hypesquad Brilliance');
+                if (user.public_flags & (1 << 8)) badges.push('Hypesquad Balance');
+                if (user.public_flags & (1 << 9)) badges.push('Early Supporter');
+                if (user.public_flags & (1 << 10)) badges.push('Team User');
+                if (user.public_flags & (1 << 12)) badges.push('System');
+                if (user.public_flags & (1 << 14)) badges.push('Bug Hunter Level 2');
+                if (user.public_flags & (1 << 16)) badges.push('Verified Bot');
+                if (user.public_flags & (1 << 17)) badges.push('Early Verified Bot Developer');
+                if (user.public_flags & (1 << 18)) badges.push('Moderator Programs Alumni');
             }
             document.getElementById('badges').textContent = badges.join(', ') || 'None';
             
@@ -720,10 +766,16 @@
                     let state = activity.state || '';
                     let timestamp = '';
                     
-                    if (activity.emoji) {
-                        icon = activity.emoji.id 
-                            ? `<img src="https://cdn.discordapp.com/emojis/${activity.emoji.id}.${activity.emoji.animated ? 'gif' : 'png'}" alt="${activity.emoji.name}" style="height: 1.5rem;">`
-                            : activity.emoji.name;
+                    if (activity.id === 'custom') {
+                        name = 'Custom Status';
+                        details = activity.state || '';
+                        state = '';
+                        
+                        if (activity.emoji) {
+                            icon = activity.emoji.id 
+                                ? `<img src="https://cdn.discordapp.com/emojis/${activity.emoji.id}.${activity.emoji.animated ? 'gif' : 'png'}" alt="${activity.emoji.name}" style="height: 1.5rem;">`
+                                : activity.emoji.name;
+                        }
                     }
                     
                     if (activity.timestamps && activity.timestamps.start) {
@@ -731,20 +783,26 @@
                         timestamp = `Started at ${startTime.toLocaleTimeString()}`;
                     }
                     
-                    if (activity.id === 'custom') {
-                        name = 'Custom Status';
-                        details = activity.state || '';
-                        state = '';
+                    let largeImage = '';
+                    if (activity.assets && activity.assets.large_image) {
+                        if (activity.assets.large_image.startsWith('spotify:')) {
+                            largeImage = `https://i.scdn.co/image/${activity.assets.large_image.replace('spotify:', '')}`;
+                        } else if (activity.assets.large_image.startsWith('mp:')) {
+                            largeImage = `https://media.discordapp.net/${activity.assets.large_image.replace('mp:', '')}`;
+                        } else {
+                            largeImage = `https://cdn.discordapp.com/app-assets/${activity.application_id}/${activity.assets.large_image}.png`;
+                        }
                     }
                     
                     activityCard.innerHTML = `
                         <div class="activity-icon ${activity.id === 'spotify:1' ? 'spotify-icon' : ''}">
-                            ${icon || '<i class="fas fa-gamepad"></i>'}
+                            ${icon || (largeImage ? `<img src="${largeImage}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">` : '<i class="fas fa-gamepad"></i>')}
                         </div>
                         <div class="activity-details">
                             <h3>${name}</h3>
                             ${details ? `<p>${details}</p>` : ''}
                             ${state ? `<p>${state}</p>` : ''}
+                            ${activity.assets?.large_text ? `<p><small>${activity.assets.large_text}</small></p>` : ''}
                             ${timestamp ? `<div class="activity-time">${timestamp}</div>` : ''}
                         </div>
                     `;
